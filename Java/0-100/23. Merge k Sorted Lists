@@ -1,0 +1,80 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    private int num ;
+    private ListNode[] datas;
+    private void swap(ListNode[] lists , int x , int y){
+        ListNode n = lists[x];
+        lists[x] = lists[y];
+        lists[y] = n ;
+    }
+    private void removeTop(){
+        datas[1] = datas[num];
+        num--;
+        siftdown(1);
+    }
+    private void siftdown(int i){
+        int t , flag =0;
+        while(i*2<=num && flag ==0){
+            // 跟左節點比較大小
+            if(datas[i].val > datas[i*2].val )
+            t = i * 2;
+            else
+            t = i;
+            if(i*2+1 <= num){
+                if(datas[t].val > datas[i*2+1].val )
+                t = i * 2 + 1;
+            }
+            // 已經是最小了不用再往下比較了
+            if(t == i)
+                break;
+            swap(datas,t,i);
+            i=t;
+        }
+    }
+    private void init(ListNode[] lists){
+        for(int i = num/2 ; i >= 1 ; i-- )
+            siftdown(i);
+    }
+
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists==null || lists.length < 1)
+        return null;
+        datas = new ListNode[lists.length+1];
+        num = 0;
+        for(int i = 1 ; i <= lists.length ; i ++){
+            if(lists[i-1]!=null){
+                num++;
+                datas[num] = lists[i-1];
+            }
+        }
+        init(datas);
+        if(num<1)return null;
+        ListNode head = new ListNode(datas[1].val);
+        if(datas[1].next == null){
+                removeTop();
+        }else{
+            datas[1] = datas[1].next;
+            siftdown(1);
+        }
+        ListNode tail = num >= 1 ? new ListNode(datas[1].val) : null;
+        head.next = tail;
+        while(num >= 1){
+            if(datas[1].next == null){
+                removeTop();
+            }else{
+                datas[1] = datas[1].next;
+                siftdown(1);
+            }
+            tail.next = num >= 1 ? new ListNode(datas[1].val) : null;
+            tail = tail.next;
+        }
+        return head;
+    }
+}
