@@ -41,6 +41,6 @@ public class Solution {
             head.val = head.val%10;
             head = head.next;
         }
-        return result;
+      return result;
     }
 }
