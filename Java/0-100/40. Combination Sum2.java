@@ -19,7 +19,7 @@
 
 // 反正就是找出可能會成為target的組合。 我使用的是廣度搜尋法。
 public class Solution {
-    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         Arrays.sort(candidates);
         List<List<Integer>> result = new ArrayList<List<Integer>>();
         if(candidates.length < 1 || candidates[0] > target){
@@ -28,6 +28,8 @@ public class Solution {
         int tail = 1,head = 1;
         Map<Integer , Note> map = new HashMap<>();
         for(int i = 0 ; i < candidates.length && candidates[i] <= target ; i ++){
+            if(i > 0 && candidates[i] == candidates[i-1])
+            continue;
             map.put(tail,new Note(i , candidates[i] , candidates[i] , -1));
             tail++;
         }
@@ -44,9 +46,13 @@ public class Solution {
                 head++;
                 continue;
             }
-            for(int i = n.index ; i < candidates.length  ; i ++){
+            for(int i = n.index + 1; i < candidates.length  ; i ++){
                 if((n.sum + candidates[i]) > target)
                 break;
+                if(i > n.index + 1){
+                    if(candidates[i] == candidates[i-1])
+                    continue;
+                }
                 map.put(tail,new Note(i ,candidates[i] , n.sum + candidates[i], head));
                 tail++;
             }
@@ -65,28 +71,5 @@ public class Solution {
             this.sum = sum ;
             this.f = f;
         }
-    }
-}
-// 網路的深度搜尋法
-public class Solution {
-    public List<List<Integer>> combinationSum(int[] candidates, int target) {
-    	Arrays.sort(candidates);
-        List<List<Integer>> result = new ArrayList<List<Integer>>();
-        getResult(result, new ArrayList<Integer>(), candidates, target, 0);
-
-        return result;
-    }
-
-    private void getResult(List<List<Integer>> result, List<Integer> cur, int candidates[], int target, int start){
-    	if(target > 0){
-    		for(int i = start; i < candidates.length && target >= candidates[i]; i++){
-    			cur.add(candidates[i]);
-    			getResult(result, cur, candidates, target - candidates[i], i);
-    			cur.remove(cur.size() - 1);
-    		}//for
-    	}//if
-    	else if(target == 0 ){
-    		result.add(new ArrayList<Integer>(cur));
-    	}//else if
     }
 }
