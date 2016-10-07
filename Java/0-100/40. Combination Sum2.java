@@ -1,4 +1,3 @@
-// 39. Combination Sum
 // QuestionEditorial Solution  My Submissions
 // Total Accepted: 116151
 // Total Submissions: 341751

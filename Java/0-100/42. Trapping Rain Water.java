@@ -1,75 +1,56 @@
-// 39. Combination Sum
-// QuestionEditorial Solution  My Submissions
-// Total Accepted: 116151
-// Total Submissions: 341751
-// Difficulty: Medium
-// Given a set of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+// Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
 //
-// The same repeated number may be chosen from C unlimited number of times.
-//
-// Note:
-// All numbers (including target) will be positive integers.
-// The solution set must not contain duplicate combinations.
-// For example, given candidate set [2, 3, 6, 7] and target 7,
-// A solution set is:
-// [
-//   [7],
-//   [2, 2, 3]
-// ]
+// For example,
+// Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
 
-// 反正就是找出可能會成為target的組合。 我使用的是廣度搜尋法。
+// 自己想的，一直向左靠攏
 public class Solution {
-    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        Arrays.sort(candidates);
-        List<List<Integer>> result = new ArrayList<List<Integer>>();
-        if(candidates.length < 1 || candidates[0] > target){
-            return result;
-        }
-        int tail = 1,head = 1;
-        Map<Integer , Note> map = new HashMap<>();
-        for(int i = 0 ; i < candidates.length && candidates[i] <= target ; i ++){
-            if(i > 0 && candidates[i] == candidates[i-1])
-            continue;
-            map.put(tail,new Note(i , candidates[i] , candidates[i] , -1));
-            tail++;
-        }
-        while(head<tail){
-            Note n = map.get(head);
-            if(n.sum == target){
-                List<Integer> list = new ArrayList<>();
-                while(true){
-                    list.add(n.val);
-                    if(n.f == -1)break;
-                    n = map.get(n.f);
+    public int trap(int[] height) {
+        if(height.length<1)
+        return 0;
+        int sum = 0 ,heightestindex = 0;
+        int lasth = height[0];
+        int heightestnow = lasth;
+        for(int i = 1; i < height.length ; i ++ ){
+            int h = height[i];
+            if(h > lasth){
+                int t = Math.min(h ,heightestnow);
+                for(int k = i -1 ; k > heightestindex ; k--){
+                    int s = t - height[k];
+                    if(s <= 0)
+                    break;
+                    sum+=s;
+                    height[k] = t;
                 }
-                result.add(list);
-                head++;
-                continue;
             }
-            for(int i = n.index + 1; i < candidates.length  ; i ++){
-                if((n.sum + candidates[i]) > target)
-                break;
-                if(i > n.index + 1){
-                    if(candidates[i] == candidates[i-1])
-                    continue;
-                }
-                map.put(tail,new Note(i ,candidates[i] , n.sum + candidates[i], head));
-                tail++;
+            if(h >= heightestnow){
+                heightestnow = h;
+                heightestindex = i;
             }
-            head++;
+            lasth = h ;
         }
-        return result;
+        return sum;
     }
-    private class Note{
-        public int index = 0;
-        public int sum = 0;
-        public int val = 0;
-        public int f = -1;
-        public Note(int index,int val , int sum , int f){
-            this.index = index;
-            this.val = val;
-            this.sum = sum ;
-            this.f = f;
+}
+
+// 網路神人答案，兩邊同時靠攏。
+public int trap(int[] A){
+    int a=0;
+    int b=A.length-1;
+    int max=0;
+    int leftmax=0;
+    int rightmax=0;
+    while(a<=b){
+        leftmax=Math.max(leftmax,A[a]);
+        rightmax=Math.max(rightmax,A[b]);
+        if(leftmax<rightmax){
+            max+=(leftmax-A[a]);       // leftmax is smaller than rightmax, so the (leftmax-A[a]) water can be stored
+            a++;
+        }
+        else{
+            max+=(rightmax-A[b]);
+            b--;
         }
     }
+    return max;
 }
