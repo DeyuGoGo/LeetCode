@@ -9,6 +9,8 @@ public class Solution {
         }
         int absn = n < 0 ? -n : n;
         int t = 0;
+        // 如果是30次方 會等於 temp 次方(1 -> 2 -> 4 -> 8 -> 16)* temp2 次方(如果有餘數的話才會出現 8 + 4 + 2)
+        // 16 + 14
         while(absn>=2){
             if(absn % 2 == 1){
                 if(temp2 == 0 )
